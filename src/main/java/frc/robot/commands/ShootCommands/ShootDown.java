@@ -2,25 +2,25 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.ShootCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Store extends Command {
-  /** Creates a new Store. */
-  Shooter shooter;
-  public Store(Shooter shooter) {
-    // Use addRequirements() here to declare subsystem dependencies.
+public class ShootDown extends Command {
+  /** Creates a new Shoot. */
+  private Shooter shooter;
+  public ShootDown(Shooter shooter) {
     this.shooter = shooter;
     addRequirements(shooter);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooter.shoot(-1);
+    shooter.shootBot(-3500);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -30,7 +30,7 @@ public class Store extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.shoot(0);
+    shooter.stop();
   }
 
   // Returns true when the command should end.

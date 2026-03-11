@@ -2,13 +2,15 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.ShootCommands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.commands.IntakeIn;
-import frc.robot.commands.ShootUp;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.IntakeCommands.IntakeIn;
+import frc.robot.commands.UtilityCommands.DoTimeOut;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.RobotLimelight;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -16,9 +18,9 @@ import frc.robot.subsystems.Shooter;
 public class Shoot extends ParallelCommandGroup {
   /** Creates a new Shoot. */
   
-  public Shoot(Intake intake, Shooter shooter) {
+  public Shoot(Intake intake, Shooter shooter, RobotLimelight limelight) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new ShootUp(shooter), new IntakeIn(intake));
+    addCommands(new SequentialCommandGroup(new DoTimeOut(1), new ShootUp(shooter, limelight)), new IntakeIn(intake));
   }
 }

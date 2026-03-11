@@ -26,7 +26,7 @@ public final class Constants {
     //public static final double kDriveDeadband = 0.05;
     public static final double kXDriveDeadband = .05;
     public static final double kYDriveDeadband = .05;
-    public static final double kThetaDriveDeadband = .05;
+    public static final double kThetaDriveDeadband = .025;
   }
     public static final class DriveConstants {
 

@@ -95,7 +95,7 @@ public static final SparkMaxConfig drivingR2Config = new SparkMaxConfig();
 
    public void curvatureDrive( double stickY, double stickZ, boolean turnInPlace){ 
     this.turnInPlace = turnInPlace;
-    m_robotDrive.curvatureDrive(stickY, stickZ, turnInPlace);
+    m_robotDrive.curvatureDrive(-stickY, stickZ, turnInPlace);
 }
 
 

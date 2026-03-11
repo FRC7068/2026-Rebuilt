@@ -5,14 +5,10 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.subsystems.LimelightHelpers;
 import edu.wpi.first.math.controller.PIDController;
 
 
@@ -28,16 +24,17 @@ public class RobotLimelight extends SubsystemBase {
   
 
   }
-  private static double LimelightDist(){
+  public static double GetDist(){
     //NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     //NetworkTableEntry ty = table.getEntry("ty");
     //double targetOffsetAngle_Vertical = ty.getDouble(0.0);
     double targetOffsetAngle_Vertical = LimelightHelpers.getTY("limelight");
+    double distanceFromLimelightToGoalInches;
     // how many degrees back is your limelight rotated from perfectly vertical?
     double limelightMountAngleDegrees = 0; 
 
     // distance from the center of the Limelight lens to the floor
-    double limelightLensHeightInches = 15.5;//15.25; 
+    double limelightLensHeightInches = 17.25;//15.25; 
     double goalHeightInches;
     if(LimelightHelpers.getFiducialID("limelight") > 0){
     goalHeightInches = (Constants.LimelightConstants.tagInfoArray[(int) LimelightHelpers.getFiducialID("limelight")][0]);
@@ -47,16 +44,20 @@ public class RobotLimelight extends SubsystemBase {
   angleToGoalRadians = (limelightMountAngleDegrees + targetOffsetAngle_Vertical)* (3.14159 / 180.0);
     SmartDashboard.putNumber("angle", angleToGoalRadians);
     //calculate distance
-    double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
-
+    if(angleToGoalRadians != 0){
+    distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
+    } else {
+      angleToGoalRadians = angleToGoalRadians+0.0005;
+    distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
+    }
     return distanceFromLimelightToGoalInches;
   }
 
 
-  public static double limelight_Y_proportional(double Y){
+  public static double Reginald(double Y){
     //omly works with swerve drive
     double outputSpeed;
-    double LimelightDist = LimelightDist();
+    double LimelightDist = GetDist();
     double xOffset = LimelightDist * (Math.sin(Math.toRadians(LimelightHelpers.getTX("limelight"))));
     double goalWithOffset = (0 + Y);
     double kp;
@@ -108,7 +109,7 @@ public class RobotLimelight extends SubsystemBase {
 /* 
     //If goal with offset is less than 0 then want to move right
     if(goalWithOffset < 0){
-//NEED TO CHECK POS/NEG SPEED DIRECTION
+    //NEED TO CHECK POS/NEG SPEED DIRECTION
       if( xOffset > goalWithOffset - 10 & xOffset <= goalWithOffset - 1){
         outputSpeed = 0.5 * Math.abs(goalWithOffset/ (10 - goalWithOffset));
       } 
@@ -174,7 +175,7 @@ public class RobotLimelight extends SubsystemBase {
     // if it is too high, the robot will oscillate around.
     // if it is too low, the robot will never reach its target
     // if the robot never turns in the correct direction, kP should be inverted.
-    double kP = 0.001; //0.003
+    double kP = 0.0025; //0.003
 
     // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
     // your limelight 3 feed, tx should return roughly 31 degrees.
@@ -202,7 +203,7 @@ public class RobotLimelight extends SubsystemBase {
 
 
 
-   double LimelightDist = LimelightDist();
+   double LimelightDist = GetDist();
     //12+    -> -1
     //12-4   -> scale from -1 to 0
     //4-0    -> scale from 0 to 1
@@ -246,16 +247,12 @@ return LimelightHelpers.getBotPose2d(limelightName);
 
     SmartDashboard.putNumber("limelightID", LimelightHelpers.getFiducialID("limelight"));
     SmartDashboard.putNumber("limelightHeight", Constants.LimelightConstants.tagInfoArray[(int)LimelightHelpers.getFiducialID("limelight")][0]);
-    SmartDashboard.putNumber("limelightdist", LimelightDist());
+    SmartDashboard.putNumber("limelightdist", GetDist());
     // SmartDashboard.putNumber("angle", angleToGoalRadians);
     SmartDashboard.putNumber("TestTx", LimelightHelpers.getTX(limelightName));
     SmartDashboard.putNumber("TestTy", LimelightHelpers.getTY(limelightName));
     SmartDashboard.putNumber("RangeProportional", limelight_range_proportional());
     SmartDashboard.putNumber("AimProportional", limelight_aim_proportional());
-
-    
-    }
-
-    
+    } 
   }
 }
