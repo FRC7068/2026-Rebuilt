@@ -2,18 +2,21 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.IntakeCommands;
+package frc.robot.commands.ShootCommands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.RobotLimelight;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IntakeIn extends Command {
+public class ShootF extends Command {
   /** Creates a new Shoot. */
-  private Intake intake;
-  public IntakeIn(Intake intake) {
-    this.intake = intake;
-    addRequirements(intake);
+  private Shooter shooter;
+  public ShootF(Shooter shooter) {
+    this.shooter = shooter;
+    addRequirements(shooter);
+
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -25,14 +28,14 @@ public class IntakeIn extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-        intake.intake(-6000);
-
+    shooter.shootTop(0.7*6000); //6000max rpm
+    shooter.shootBot(0.7*5676); // 5676max rpm
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stop();
+    shooter.stop();
   }
 
   // Returns true when the command should end.

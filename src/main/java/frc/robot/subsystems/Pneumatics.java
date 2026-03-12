@@ -15,17 +15,17 @@ import edu.wpi.first.wpilibj.PneumaticHub;
 
 public class Pneumatics extends SubsystemBase {
   /** Creates a new Pneumatics. */
-       final DoubleSolenoid m_solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
-       final PneumaticHub m_Hub = new PneumaticHub(15);
+       private PneumaticHub m_Hub = new PneumaticHub(15);
        final Compressor m_Compressor = m_Hub.makeCompressor();
-      
+       final DoubleSolenoid m_solenoid = m_Hub.makeDoubleSolenoid(14, 15);
 
   public Pneumatics() {
     //m_Compressor.enableAnalog(75, 100);
     m_Compressor.enableDigital();
+    setOff();
   }
   public void setOn(){
-    m_solenoid.set(Value.kForward);;
+    m_solenoid.set(Value.kForward);
   }
   public void setOff(){
       m_solenoid.set(Value.kReverse);

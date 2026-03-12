@@ -21,6 +21,11 @@ public class Shoot extends ParallelCommandGroup {
   public Shoot(Intake intake, Shooter shooter, RobotLimelight limelight) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new SequentialCommandGroup(new DoTimeOut(1), new ShootUp(shooter, limelight)), new IntakeIn(intake));
+    addCommands(
+      new SequentialCommandGroup(
+      new DoTimeOut(1), 
+      new ShootUp(shooter, limelight)), 
+      new IntakeIn(intake)
+      );
   }
 }

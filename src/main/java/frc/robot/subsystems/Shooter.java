@@ -38,7 +38,7 @@ public class Shooter extends SubsystemBase {
    private Slot0Configs slot0Configs;
    private MotionMagicConfigs krakenMagic;
 
-   private static SparkMax m_shootMotor  = new SparkMax(5, MotorType.kBrushless);
+   private static SparkMax m_shootMotor  = new SparkMax(5, MotorType.kBrushless); // also hopper feeder
    private SparkClosedLoopController m_ClosedLoopControl = m_shootMotor.getClosedLoopController();
 
    public static final SparkMaxConfig shootingConfig = new SparkMaxConfig();

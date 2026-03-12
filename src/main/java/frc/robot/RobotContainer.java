@@ -62,6 +62,7 @@ public class RobotContainer {
   private final Shoot m_shoot = new Shoot(m_Intake, m_Shooter, m_Limelight);
   private final Load m_load = new Load(m_Shooter, m_Intake);
   private final Release m_Release = new Release(m_Intake, m_Shooter);
+  private final ShootFar m_Far = new ShootFar(m_Shooter, m_Intake);
 
   private final IntakeIn m_intakeIn = new IntakeIn(m_Intake);
 
@@ -128,11 +129,14 @@ public class RobotContainer {
     new JoystickButton(m_stick, XboxController.Button.kRightBumper.value).whileTrue(m_Climbforward);
     new JoystickButton(m_stick, XboxController.Button.kLeftBumper.value).whileTrue(m_Climbreverse);
     new JoystickButton(m_stick, XboxController.Button.kX.value).onTrue(m_SoleniodOn);
+    new JoystickButton(m_stick, XboxController.Button.kX.value).onTrue(m_SoleniodOn);
     new JoystickButton(m_stick, XboxController.Button.kY.value).onTrue(m_SoleniodOff);
-    new JoystickButton(m_Controller, XboxController.Button.kX.value).whileTrue(m_LightShoot);
-    new JoystickButton(m_Controller, XboxController.Button.kY.value).whileTrue(m_load);
+
+    new JoystickButton(m_Controller, XboxController.Button.kLeftBumper.value).whileTrue(m_load);
+    new JoystickButton(m_Controller, XboxController.Button.kRightBumper.value).whileTrue(m_Far);
     new JoystickButton(m_Controller, XboxController.Button.kA.value).whileTrue(m_shoot);
     new JoystickButton(m_Controller, XboxController.Button.kB.value).whileTrue(m_LimelightRotate);
+    new JoystickButton(m_Controller, XboxController.Button.kX.value).whileTrue(m_Release);
 
 
 
@@ -161,27 +165,32 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    new SequentialCommandGroup(
+//     new SequentialCommandGroup(
 
-    new ParallelRaceGroup(
+//     new ParallelRaceGroup(
  
-    new RunCommand(()->
-     m_Drive.curvatureDrive(
-      // Setup for xbox axis. For joystick operation set axis to 1
-     MathUtil.applyDeadband(1, OIConstants.kXDriveDeadband), 
-     // Set for xbox axis. For joystick operation set to 3
-     MathUtil.applyDeadband(0, OIConstants.kThetaDriveDeadband),
-     m_stick.getRawButton(2)
-    ),
-     m_Drive
-    ),
-    new DoTimeOut(1)
-    ),
-    new ParallelRaceGroup(
-     m_LightShoot,
-     new DoTimeOut(5)
-    )
-    );    
-    return null;
-  }
-}
+//     new RunCommand(()->
+//      m_Drive.curvatureDrive(
+//       // Setup for xbox axis. For joystick operation set axis to 1
+//      MathUtil.applyDeadband(0.25, OIConstants.kXDriveDeadband), 
+//      // Set for xbox axis. For joystick operation set to 3
+//      MathUtil.applyDeadband(0, OIConstants.kThetaDriveDeadband),
+//      m_stick.getRawButton(2)
+//     ),
+//      m_Drive
+//     ),
+//     new DoTimeOut(1)
+//     ),
+//     new ParallelRaceGroup(
+//       new DoTimeOut(2),
+//       new LimelightRotate(m_Drive,m_Limelight)
+//     ),
+//     new ParallelRaceGroup(
+//      m_LightShoot,
+//      new DoTimeOut(5)
+//     )
+//     );    
+     return null;
+   }
+
+ }

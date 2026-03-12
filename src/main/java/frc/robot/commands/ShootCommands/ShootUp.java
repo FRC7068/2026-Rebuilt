@@ -32,8 +32,8 @@ public class ShootUp extends Command {
   @Override
   public void execute() {
     percentSpeed = (limelight.GetDist()*0.0025)+0.465;
-    shooter.shootTop(percentSpeed*6000); //6000max rpm
-    shooter.shootBot(percentSpeed*5676); // 5676max rpm
+    shooter.shootTop(-percentSpeed*6000); //6000max rpm
+    shooter.shootBot(5676); // 5676max rpm
     SmartDashboard.putNumber("Speed Factor", percentSpeed);
   }
 

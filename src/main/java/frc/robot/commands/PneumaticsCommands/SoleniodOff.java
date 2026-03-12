@@ -13,17 +13,19 @@ public class SoleniodOff extends Command {
   private final Pneumatics pneumatics;
   public SoleniodOff(Pneumatics pneumatics) {
     this.pneumatics = pneumatics;
+    addRequirements(pneumatics);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pneumatics.setOff();
+      pneumatics.setOff();
   }
 
   // Called once the command ends or is interrupted.
