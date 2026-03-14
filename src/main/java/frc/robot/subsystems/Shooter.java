@@ -80,7 +80,7 @@ public class Shooter extends SubsystemBase {
             .openLoopRampRate(1)
             .closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .p(0.002)
+            .p(0.001)
             .outputRange(-1, 1)
             .maxMotion
             .cruiseVelocity(6000)
@@ -101,8 +101,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void shootBot(double speed){
-    //m_shootMotor.set(speed);
-    controler.setSetpoint(speed, ControlType.kMAXMotionVelocityControl);
+    m_shootMotor.set(speed);
+    //controler.setSetpoint(speed, ControlType.kMAXMotionVelocityControl);
      //max rpm of the neo
     //Velocity set in RPMS. A SIM has 5310 RMPs free speed
     //So setpoint max around 95% 

@@ -7,6 +7,7 @@ package frc.robot.commands.ShootCommands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.LimelightHelpers;
 import frc.robot.subsystems.RobotLimelight;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -31,10 +32,14 @@ public class ShootUp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    percentSpeed = (limelight.GetDist()*0.0025)+0.465;
-    shooter.shootTop(-percentSpeed*6000); //6000max rpm
-    shooter.shootBot(5676); // 5676max rpm
+    if(LimelightHelpers.getFiducialID("limelight") > 0){
+    percentSpeed = ((limelight.GetDist()*0.0011)+0.465);
+    shooter.shootTop(percentSpeed*6000); //6000max rpm
+    shooter.shootBot(100); // 5676max rpm
     SmartDashboard.putNumber("Speed Factor", percentSpeed);
+    } else{
+      shooter.stop();
+    }
   }
 
   // Called once the command ends or is interrupted.

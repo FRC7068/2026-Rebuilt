@@ -17,6 +17,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Climber extends SubsystemBase {
   /** Creates a new climber. */
 
+  boolean ForwardLimit;
+  boolean ReverseLimit;
+
   private TalonFX climber;
   private TalonFXConfiguration climbConfig;
   private CurrentLimitsConfigs currentConfig;
@@ -70,9 +73,26 @@ public class Climber extends SubsystemBase {
   climber.set(speed);
   }
 
+
+
+
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if(climber.getPosition().getValueAsDouble() == 125){
+      ForwardLimit = true;
+    } else{
+      ForwardLimit = false;
+    }
+
+    if(climber.getPosition().getValueAsDouble() == -217){
+      ReverseLimit = true;
+    } else{
+      ReverseLimit = false;
+    }
     SmartDashboard.putNumber("Climber Counts", climber.getPosition().getValueAsDouble());
+    SmartDashboard.putBoolean("ForwardLimit", ForwardLimit);
+    SmartDashboard.putBoolean("Reverse Limit", ReverseLimit);
   }
 }

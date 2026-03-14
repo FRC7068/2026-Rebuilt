@@ -22,13 +22,8 @@ import edu.wpi.first.math.MathUtil;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-
-import frc.robot.commands.ClimbCommands.*;
-import frc.robot.commands.UtilityCommands.*;
-import frc.robot.commands.IntakeCommands.*;
-import frc.robot.commands.DriveCommands.*;
-import frc.robot.commands.ShootCommands.*;
-import frc.robot.commands.PneumaticsCommands.*;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.subsystems.RobotLimelight;
 import frc.robot.subsystems.Shooter;
@@ -36,6 +31,14 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Pneumatics;
+
+
+import frc.robot.commands.ClimbCommands.*;
+import frc.robot.commands.UtilityCommands.*;
+import frc.robot.commands.IntakeCommands.*;
+import frc.robot.commands.DriveCommands.*;
+import frc.robot.commands.ShootCommands.*;
+import frc.robot.commands.PneumaticsCommands.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -63,6 +66,7 @@ public class RobotContainer {
   private final Load m_load = new Load(m_Shooter, m_Intake);
   private final Release m_Release = new Release(m_Intake, m_Shooter);
   private final ShootFar m_Far = new ShootFar(m_Shooter, m_Intake);
+  private final ShootA m_ShootA = new ShootA(m_Intake, m_Shooter, m_Limelight);
 
   private final IntakeIn m_intakeIn = new IntakeIn(m_Intake);
 
@@ -70,11 +74,13 @@ public class RobotContainer {
   private final LimelightRotate m_LimelightRotate = new LimelightRotate(m_Drive, m_Limelight);
   private final LimeLightShoot m_LightShoot = new LimeLightShoot(m_Limelight, m_Shooter, m_Intake);
 
-  private final Climbforward m_Climbforward = new Climbforward(m_Climber);
-  private final Climbreverse m_Climbreverse = new Climbreverse(m_Climber);
+  private final Climbforward m_Climbforward = new Climbforward(m_Climber, m_Pneumatics);
+  private final Climbreverse m_Climbreverse = new Climbreverse(m_Climber, m_Pneumatics);
 
   private final SoleniodOn m_SoleniodOn = new SoleniodOn(m_Pneumatics);
   private final SoleniodOff m_SoleniodOff = new SoleniodOff(m_Pneumatics);
+
+  private final SendableChooser<String> m_Position = new SendableChooser<>();
 
   //private final ToggleTurnInPlace m_TurnInPlace = new ToggleTurnInPlace(m_Drive);
 
@@ -92,14 +98,26 @@ public class RobotContainer {
     new RunCommand(()->
      m_Drive.curvatureDrive(
       // Setup for xbox axis. For joystick operation set axis to 1
-     MathUtil.applyDeadband(-m_stick.getRawAxis(1), OIConstants.kXDriveDeadband), 
+     MathUtil.applyDeadband(
+      m_stick.getRawAxis(1)*0.8, 
+     OIConstants.kXDriveDeadband), 
      // Set for xbox axis. For joystick operation set to 3
-     MathUtil.applyDeadband(m_stick.getRawAxis(4), OIConstants.kThetaDriveDeadband),
-     m_stick.getRawButton(2)
+     MathUtil.applyDeadband(
+      m_stick.getRawAxis(4), 
+     OIConstants.kThetaDriveDeadband),
+     (m_stick.getRawAxis(3) > 0.05)
+     ?true
+     :false
+    // m_stick.getRawButton(2)
     ),
      m_Drive
     )
     );
+
+    m_Position.setDefaultOption("Center", "Center");
+    m_Position.addOption("Left", "Left");
+    m_Position.addOption("Right", "Right");
+    SmartDashboard.putData("Start Pos", m_Position);
   }
 
 
@@ -128,9 +146,8 @@ public class RobotContainer {
     //Climber functions
     new JoystickButton(m_stick, XboxController.Button.kRightBumper.value).whileTrue(m_Climbforward);
     new JoystickButton(m_stick, XboxController.Button.kLeftBumper.value).whileTrue(m_Climbreverse);
-    new JoystickButton(m_stick, XboxController.Button.kX.value).onTrue(m_SoleniodOn);
-    new JoystickButton(m_stick, XboxController.Button.kX.value).onTrue(m_SoleniodOn);
-    new JoystickButton(m_stick, XboxController.Button.kY.value).onTrue(m_SoleniodOff);
+    // new JoystickButton(m_stick, 3).whileTrue(m_Climbforward);
+    // new JoystickButton(m_stick, 4).whileTrue(m_Climbreverse);
 
     new JoystickButton(m_Controller, XboxController.Button.kLeftBumper.value).whileTrue(m_load);
     new JoystickButton(m_Controller, XboxController.Button.kRightBumper.value).whileTrue(m_Far);
@@ -165,32 +182,126 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-//     new SequentialCommandGroup(
+    if(m_Position.getSelected().equals("Left")){  
+    return(
+    new SequentialCommandGroup(
 
-//     new ParallelRaceGroup(
+    new ParallelRaceGroup(
  
-//     new RunCommand(()->
-//      m_Drive.curvatureDrive(
-//       // Setup for xbox axis. For joystick operation set axis to 1
-//      MathUtil.applyDeadband(0.25, OIConstants.kXDriveDeadband), 
-//      // Set for xbox axis. For joystick operation set to 3
-//      MathUtil.applyDeadband(0, OIConstants.kThetaDriveDeadband),
-//      m_stick.getRawButton(2)
-//     ),
-//      m_Drive
-//     ),
-//     new DoTimeOut(1)
-//     ),
-//     new ParallelRaceGroup(
-//       new DoTimeOut(2),
-//       new LimelightRotate(m_Drive,m_Limelight)
-//     ),
-//     new ParallelRaceGroup(
-//      m_LightShoot,
-//      new DoTimeOut(5)
-//     )
-//     );    
-     return null;
+    new RunCommand(()->
+     m_Drive.curvatureDrive(
+      // Setup for xbox axis. For joystick operation set axis to 1
+     MathUtil.applyDeadband(-0.5, OIConstants.kXDriveDeadband), 
+     // Set for xbox axis. For joystick operation set to 3
+     MathUtil.applyDeadband(0, OIConstants.kThetaDriveDeadband),
+     false
+    ),
+     m_Drive
+    ),
+
+    new DoTimeOut(1.25)
+    ),
+
+    new ParallelRaceGroup(new RunCommand(()->
+     m_Drive.curvatureDrive(
+      // Setup for xbox axis. For joystick operation set axis to 1
+     MathUtil.applyDeadband(0, OIConstants.kXDriveDeadband), 
+     // Set for xbox axis. For joystick operation set to 3
+     MathUtil.applyDeadband(0.25, OIConstants.kThetaDriveDeadband),
+    true
+    ),
+     m_Drive
+    ),
+    new DoTimeOut(0.5)
+    ),
+
+    new ParallelRaceGroup(
+      new DoTimeOut(1),
+      new LimelightRotate(m_Drive,m_Limelight)
+    ),
+
+    new ParallelRaceGroup(
+     m_ShootA,
+     new DoTimeOut(5)
+    )
+     )
+     );       
+   }
+  
+
+  else if(m_Position.getSelected().equals("Right")){ 
+   return( 
+    new SequentialCommandGroup(
+
+    new ParallelRaceGroup(
+ 
+    new RunCommand(()->
+     m_Drive.curvatureDrive(
+      // Setup for xbox axis. For joystick operation set axis to 1
+     MathUtil.applyDeadband(-0.5, OIConstants.kXDriveDeadband), 
+     // Set for xbox axis. For joystick operation set to 3
+     MathUtil.applyDeadband(0, OIConstants.kThetaDriveDeadband),
+     false
+    ),
+     m_Drive
+    ),
+
+    new DoTimeOut(1.25)
+    ),
+
+    new ParallelRaceGroup(new RunCommand(()->
+     m_Drive.curvatureDrive(
+      // Setup for xbox axis. For joystick operation set axis to 1
+     MathUtil.applyDeadband(0, OIConstants.kXDriveDeadband), 
+     // Set for xbox axis. For joystick operation set to 3
+     MathUtil.applyDeadband(-0.25, OIConstants.kThetaDriveDeadband),
+    true
+    ),
+     m_Drive
+    ),
+    new DoTimeOut(0.5)
+    ),
+
+    new ParallelRaceGroup(
+      new DoTimeOut(1),
+      new LimelightRotate(m_Drive,m_Limelight)
+    ),
+
+    new ParallelRaceGroup(
+     m_ShootA,
+     new DoTimeOut(5)
+    )
+     )
+     );    
    }
 
- }
+   else if(m_Position.getSelected().equals("Center")){
+    return(
+      new SequentialCommandGroup(
+    new ParallelRaceGroup(new RunCommand(()->
+     m_Drive.curvatureDrive(
+      // Setup for xbox axis. For joystick operation set axis to 1
+     MathUtil.applyDeadband(-0.5, OIConstants.kXDriveDeadband), 
+     // Set for xbox axis. For joystick operation set to 3
+     MathUtil.applyDeadband(0, OIConstants.kThetaDriveDeadband),
+    false
+    ),
+     m_Drive
+    ),
+    new DoTimeOut(1.25)
+    ),
+    
+    new ParallelRaceGroup(
+      m_shoot,
+      new DoTimeOut(5)
+    )
+    
+    )
+    );
+
+   }else{
+
+return null;
+}
+}
+}

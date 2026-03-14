@@ -10,14 +10,14 @@ import frc.robot.subsystems.Shooter;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Load extends Command {
-  Shooter m_shooter;
-  Intake m_intake;
   /** Creates a new Load. */
+  private final Shooter shooter;
+  private final Intake intake;
   public Load(Shooter shooter, Intake intake) {
+    this.shooter = shooter;
+    this.intake = intake;
+    addRequirements(shooter, intake);
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_shooter = shooter;
-    this.m_intake = intake;
-    addRequirements(m_shooter, m_intake);
   }
 
   // Called when the command is initially scheduled.
@@ -27,15 +27,15 @@ public class Load extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.shootBot(-3000);
-    m_intake.intake(-1500);
+    shooter.shootBot(-4800);
+    intake.intake(-5300);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.stop();
-    m_intake.stop();
+    shooter.stop();
+    intake.stop();
   }
 
   // Returns true when the command should end.

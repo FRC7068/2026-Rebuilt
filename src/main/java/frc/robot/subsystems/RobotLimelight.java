@@ -36,7 +36,7 @@ public class RobotLimelight extends SubsystemBase {
     // distance from the center of the Limelight lens to the floor
     double limelightLensHeightInches = 17.25;//15.25; 
     double goalHeightInches;
-    if(LimelightHelpers.getFiducialID("limelight") > 0){
+    if((int)LimelightHelpers.getFiducialID("limelight") > 0){
     goalHeightInches = (Constants.LimelightConstants.tagInfoArray[(int) LimelightHelpers.getFiducialID("limelight")][0]);
     } else{
       goalHeightInches = 0;

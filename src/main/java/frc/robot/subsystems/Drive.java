@@ -5,7 +5,9 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
+import com.revrobotics.sim.SparkAbsoluteEncoderSim;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
@@ -15,6 +17,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkMaxAlternateEncoder;
+import com.revrobotics.spark.config.AlternateEncoderConfig;
+import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class Drive extends SubsystemBase {
@@ -28,8 +33,16 @@ public class Drive extends SubsystemBase {
 //   private final WPI_TalonSRX m_rightMotor2 = new WPI_TalonSRX(4);
 
 public static final SparkMaxConfig drivingL1Config = new SparkMaxConfig();
+//private RelativeEncoder leftEncoder = m_leftMotor1.getEncoder();
+
 public static final SparkMaxConfig drivingL2Config = new SparkMaxConfig();
-public static final SparkMaxConfig drivingR1Config = new SparkMaxConfig();
+//private AlternateEncoderConfig rightEncoder = new AlternateEncoderConfig();
+
+private SparkMaxConfig drivingR1Config = new SparkMaxConfig();
+//private  rightEncoder = m_rightMotor1.;
+
+//private RelativeEncoder rightEncoder = m_rightMotor1.getAlternateEncoder();
+
 public static final SparkMaxConfig drivingR2Config = new SparkMaxConfig();
 
   private final DifferentialDrive m_robotDrive =
@@ -45,37 +58,70 @@ public static final SparkMaxConfig drivingR2Config = new SparkMaxConfig();
     SendableRegistry.addChild(m_robotDrive, m_leftMotor1);
     SendableRegistry.addChild(m_robotDrive, m_rightMotor1);
 
+
     // Set up configurations for each drive motor
     drivingL1Config
             .idleMode(Constants.ModuleConstants.kDrivingMotorIdleMode)
             .smartCurrentLimit(Constants.ModuleConstants.kDrivingMotorCurrentLimit)
-            .inverted(false);
+            .inverted(false)
+            .smartCurrentLimit(40)
+            // .encoder
+            // .countsPerRevolution(4096)
+            // .inverted(false)
+            ;
             
 
     drivingL2Config
             .idleMode(Constants.ModuleConstants.kDrivingMotorIdleMode)
             .smartCurrentLimit(Constants.ModuleConstants.kDrivingMotorCurrentLimit)
             .inverted(true)
-            .follow(m_leftMotor1);
+            .follow(m_leftMotor1)
+            .smartCurrentLimit(40)
+            ;
     
 
     drivingR1Config
             .idleMode(Constants.ModuleConstants.kDrivingMotorIdleMode)
             .smartCurrentLimit(Constants.ModuleConstants.kDrivingMotorCurrentLimit)
-            .inverted(true);
+            .inverted(true)
+            .smartCurrentLimit(40)
+            // .encoder
+            // .countsPerRevolution(4096)
+            // .inverted(false)
+            ;
+            
             
 
     drivingR2Config
             .idleMode(Constants.ModuleConstants.kDrivingMotorIdleMode)
             .smartCurrentLimit(Constants.ModuleConstants.kDrivingMotorCurrentLimit)
             .inverted(true)
-            .follow(m_rightMotor1);
+            .follow(m_rightMotor1)
+            .smartCurrentLimit(40)
+            ;
+            
 
     //Set spark configuration
-    m_leftMotor1.configure(drivingL1Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_leftMotor2.configure(drivingL2Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_rightMotor1.configure(drivingR1Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_rightMotor2.configure(drivingR2Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_leftMotor1.configure(
+    drivingL1Config,
+    ResetMode.kResetSafeParameters, 
+    PersistMode.kPersistParameters);
+
+
+    m_leftMotor2.configure(
+    drivingL2Config,
+    ResetMode.kResetSafeParameters, 
+    PersistMode.kPersistParameters);
+
+    m_rightMotor1.configure(
+    drivingR1Config, 
+    ResetMode.kResetSafeParameters, 
+    PersistMode.kPersistParameters);
+
+    m_rightMotor2.configure(
+    drivingR2Config, 
+    ResetMode.kResetSafeParameters, 
+    PersistMode.kPersistParameters);
       
 
     // Set master followers to sync drive train sides
@@ -118,6 +164,9 @@ public void setTurnInPlace(boolean toggle){
   public void periodic() {
 
    SmartDashboard.putBoolean("Button 2 is Pressed", turnInPlace);
+  //  SmartDashboard.putNumber("Right Driving counts", rightEncoder.getPosition());
+  //  SmartDashboard.putNumber("left Driving counts", m_leftMotor1.getEncoder().getPosition());
+
 
 
   }

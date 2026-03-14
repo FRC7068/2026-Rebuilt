@@ -6,14 +6,17 @@ package frc.robot.commands.ClimbCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Pneumatics;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Climbforward extends Command {
   /** Creates a new Climbforward. */
   private final Climber climber;
-  public Climbforward(Climber climber) {
+  private final Pneumatics pneumatics;
+  public Climbforward(Climber climber, Pneumatics pneumatics) {
     this.climber = climber;
-    addRequirements(climber);
+    this.pneumatics = pneumatics;
+    addRequirements(climber, pneumatics);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -25,7 +28,8 @@ public class Climbforward extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-        climber.climb(0.2);
+        climber.climb(0.4);
+        pneumatics.setOn();
   }
 
   // Called once the command ends or is interrupted.
